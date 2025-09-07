@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { usePlayerDevice, useSpotifyPlayer } from 'react-spotify-web-playback-sdk';
 import { Track } from '@/types/game';
 import { PlayButton } from '@/components/PlayButton';
@@ -37,14 +37,7 @@ export default function DigitalGamePlay({
   const [randomStart, setRandomStart] = useState<boolean>(false);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
 
-  // Play the track when a new track is selected
-  useEffect(() => {
-    if (currentTrack && device && player) {
-      playTrack(currentTrack);
-    }
-  }, [currentTrack, device, player]);
-
-  const playTrack = async (track: Track) => {
+  const playTrack = useCallback(async (track: Track) => {
     if (!device || !player) return;
 
     try {
@@ -72,7 +65,14 @@ export default function DigitalGamePlay({
     } catch (error) {
       console.error('Error playing track:', error);
     }
-  };
+  }, [device, player, randomStart, token]);
+
+  // Play the track when a new track is selected
+  useEffect(() => {
+    if (currentTrack && device && player) {
+      playTrack(currentTrack);
+    }
+  }, [currentTrack, device, player, playTrack]);
 
   const handlePlayRandomTrack = () => {
     const track = onPlayRandomTrack();

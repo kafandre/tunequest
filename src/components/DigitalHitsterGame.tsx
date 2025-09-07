@@ -60,7 +60,7 @@ export default function DigitalHitsterGame({ token, onBackToMenu }: DigitalHitst
             <span className="text-indigo-500">Digital</span> Hitster
           </h1>
           <p className="text-lg text-gray-700 max-w-2xl mx-auto px-4">
-            Create your own music guessing game! Add Spotify playlists and we'll create 
+            Create your own music guessing game! Add Spotify playlists and we&apos;ll create 
             a randomized game with no duplicate tracks.
           </p>
         </div>

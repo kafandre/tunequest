@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { Track, GameState } from '@/types/game';
 import { SpotifyApiService } from '@/utils/spotifyApi';
 
@@ -15,7 +15,7 @@ export const useDigitalGame = (token: string) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const spotifyApi = new SpotifyApiService(token);
+  const spotifyApi = useMemo(() => new SpotifyApiService(token), [token]);
 
   /**
    * Load playlists and prepare the game
@@ -101,12 +101,16 @@ export const useDigitalGame = (token: string) => {
    */
   const markTrackAsUsed = useCallback(() => {
     if (gameState.currentTrack) {
-      setGameState(prev => ({
-        ...prev,
-        usedTracks: new Set([...prev.usedTracks, prev.currentTrack!.id]),
-        currentTrack: null,
-        isTrackInfoRevealed: false,
-      }));
+      setGameState(prev => {
+        const newUsedTracks = new Set(prev.usedTracks);
+        newUsedTracks.add(prev.currentTrack!.id);
+        return {
+          ...prev,
+          usedTracks: newUsedTracks,
+          currentTrack: null,
+          isTrackInfoRevealed: false,
+        };
+      });
     }
   }, [gameState.currentTrack]);
 
